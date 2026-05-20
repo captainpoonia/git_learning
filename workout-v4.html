@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Training Plan v4</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inconsolata:wght@400;500;600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #f5f2ec;
+  --card: #fff;
+  --border: #e2ddd5;
+  --text: #1a1612;
+  --muted: #8a8178;
+  --pull: #1a1612;
+  --push: #c75f3e;
+  --legs: #2d6a4f;
+  --cardio: #1e4d8c;
+  --power: #7a4f9e;
+  --accent: #b07a00;
+  --tag-bg: #1a1612;
+  --tag-fg: #f5f2ec;
+}
+
+body {
+  font-family: 'Syne', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  padding: 2rem 1rem 5rem;
+  max-width: 660px;
+  margin: 0 auto;
+}
+
+.header {
+  padding: 2.5rem 0 2rem;
+  border-bottom: 2px solid var(--text);
+  margin-bottom: 2rem;
+}
+
+.v-tag {
+  display: inline-block;
+  background: var(--tag-bg);
+  color: var(--tag-fg);
+  font-family: 'Inconsolata', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  padding: 0.2rem 0.55rem;
+  border-radius: 3px;
+  margin-bottom: 0.9rem;
+  text-transform: uppercase;
+}
+
+h1 {
+  font-size: 2.1rem;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.5rem;
+}
+h1 span { color: var(--push); }
+
+.sub {
+  font-family: 'Inconsolata', monospace;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+/* Principles */
+.principles {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.6rem;
+  margin-bottom: 2rem;
+}
+.p-card {
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 0.85rem 0.8rem;
+}
+.p-card .p-icon { font-size: 1.1rem; margin-bottom: 0.3rem; }
+.p-card .p-title { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 0.2rem; }
+.p-card .p-body { font-family: 'Inconsolata', monospace; font-size: 0.72rem; color: var(--muted); line-height: 1.4; }
+
+/* Week strip */
+.week-label {
+  font-family: 'Inconsolata', monospace;
+  font-size: 0.65rem;
+  color: var(--muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 0.6rem;
+}
+.week {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.35rem;
+  margin-bottom: 2rem;
+}
+.dc {
+  border-radius: 8px;
+  padding: 0.55rem 0.2rem;
+  text-align: center;
+  border: 1.5px solid transparent;
+  background: var(--card);
+}
+.dc .dn { font-family: 'Inconsolata', monospace; font-size: 0.6rem; color: var(--muted); margin-bottom: 0.25rem; }
+.dc .dd { width: 7px; height: 7px; border-radius: 50%; margin: 0 auto 0.3rem; }
+.dc .dl { font-size: 0.58rem; font-weight: 700; letter-spacing: 0.02em; text-transform: uppercase; line-height: 1.2; }
+.dc.pull { border-color: var(--pull); } .dc.pull .dd { background: var(--pull); }
+.dc.push { border-color: var(--push); } .dc.push .dd { background: var(--push); }
+.dc.legs { border-color: var(--legs); } .dc.legs .dd { background: var(--legs); }
+.dc.cardio { border-color: var(--cardio); } .dc.cardio .dd { background: var(--cardio); }
+.dc.power { border-color: var(--power); } .dc.power .dd { background: var(--power); }
+.dc.rest { border-color: var(--border); } .dc.rest .dd { background: var(--border); }
+
+/* Sessions */
+.sessions { display: flex; flex-direction: column; gap: 0.75rem; }
+
+.session {
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+.session.open { border-color: var(--text); }
+
+.sh {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 1rem 1.1rem;
+  cursor: pointer;
+  user-select: none;
+}
+.sh:hover { background: #faf8f4; }
+
+.sbar { width: 3px; height: 32px; border-radius: 2px; flex-shrink: 0; }
+.sd { flex: 1; }
+.sd strong { font-size: 0.95rem; font-weight: 700; display: block; letter-spacing: -0.01em; }
+.sd span { font-family: 'Inconsolata', monospace; font-size: 0.74rem; color: var(--muted); }
+
+.dbadge { font-family: 'Inconsolata', monospace; font-size: 0.62rem; color: var(--muted); min-width: 26px; }
+
+/* Time badge */
+.time-badge {
+  font-family: 'Inconsolata', monospace;
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 0.2rem 0.5rem;
+  border-radius: 20px;
+  border: 1.5px solid;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.time-ok { color: #2d6a4f; border-color: #2d6a4f; background: #edf7f1; }
+.time-tight { color: #b07a00; border-color: #b07a00; background: #fdf8ec; }
+
+.chev { font-size: 0.7rem; color: var(--muted); transition: transform 0.2s; }
+.session.open .chev { transform: rotate(180deg); }
+
+.sb { display: none; padding: 0 1.1rem 1.1rem; }
+.session.open .sb { display: block; }
+
+/* Time breakdown bar */
+.time-breakdown {
+  display: flex;
+  gap: 0.3rem;
+  margin-bottom: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.tb-seg {
+  font-family: 'Inconsolata', monospace;
+  font-size: 0.68rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+.tb-arrow { color: var(--muted); font-size: 0.6rem; }
+.tb-total {
+  font-family: 'Inconsolata', monospace;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-left: auto;
+  border: 1.5px solid var(--text);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+}
+
+/* Cardio block */
+.cardio-block {
+  background: #eef4ff;
+  border: 1.5px solid #b8cfee;
+  border-radius: 9px;
+  padding: 0.8rem 0.9rem;
+  margin-bottom: 0.9rem;
+  font-family: 'Inconsolata', monospace;
+  font-size: 0.8rem;
+}
+.cardio-block .cb-title { font-weight: 600; font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--cardio); margin-bottom: 0.4rem; }
+.cardio-block .cb-row { display: flex; justify-content: space-between; color: #2a3a5c; margin-bottom: 0.2rem; font-size: 0.78rem; }
+.cardio-block .cb-note { margin-top: 0.4rem; font-size: 0.72rem; color: #5a7aa8; }
+
+.primer-note {
+  background: #fffbec;
+  border: 1.5px solid #e8d88a;
+  border-radius: 8px;
+  padding: 0.6rem 0.8rem;
+  font-family: 'Inconsolata', monospace;
+  font-size: 0.77rem;
+  color: #7a6010;
+  margin-bottom: 0.9rem;
+}
+
+/* Exercise list */
+.section-divider {
+  font-family: 'Inconsolata', monospace;
+  font-size: 0.63rem;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin: 0.8rem 0 0.5rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 1px dashed var(--border);
+}
+
+.exlist { list-style: none; display: flex; flex-direction: column; gap: 0.4rem; }
+.exlist li {
+  display: flex;
+  gap: 0.7rem;
+  align-items: baseline;
+  padding: 0.5rem 0.65rem;
+  border-radius: 7px;
+  background: #faf8f4;
+  border: 1px solid var(--border);
+}
+.sets { font-family: 'Inconsolata', monospace; font-size: 0.7rem; font-weight: 600; min-width: 62px; flex-shrink: 0; }
+.sets.c-pull { color: var(--pull); }
+.sets.c-push { color: var(--push); }
+.sets.c-legs { color: var(--legs); }
+.sets.c-cardio { color: var(--cardio); }
+.sets.c-power { color: var(--power); }
+.sets.c-accent { color: var(--accent); }
+
+.exinfo { flex: 1; }
+.exname { font-size: 0.85rem; font-weight: 600; }
+.exnote { font-family: 'Inconsolata', monospace; font-size: 0.72rem; color: var(--muted); margin-top: 0.1rem; display: block; line-height: 1.35; }
+
+/* Warmup grid */
+.warmup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem; }
+.wu-item { background: #faf8f4; border: 1px solid var(--border); border-radius: 7px; padding: 0.5rem 0.65rem; font-size: 0.81rem; }
+.wu-item .wu-sets { font-family: 'Inconsolata', monospace; font-size: 0.68rem; color: var(--muted); display: block; margin-bottom: 0.1rem; }
+
+/* Rules */
+.rules { margin-top: 2rem; background: var(--text); color: var(--bg); border-radius: 12px; padding: 1.3rem; }
+.rules h3 { font-family: 'Inconsolata', monospace; font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: #888; margin-bottom: 1rem; }
+.rule { display: flex; gap: 0.7rem; font-size: 0.83rem; margin-bottom: 0.7rem; padding-bottom: 0.7rem; border-bottom: 1px solid #2e2a25; align-items: baseline; }
+.rule:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+.rule-icon { font-size: 0.9rem; flex-shrink: 0; }
+.rule p { color: #b0a898; line-height: 1.4; }
+.rule strong { color: var(--bg); }
+
+@media (max-width: 440px) {
+  .principles { grid-template-columns: 1fr 1fr; }
+  h1 { font-size: 1.7rem; }
+  .time-badge { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="v-tag">5-Day · Strength + Cardio · Max 90 min/session</div>
+  <h1>Train Like You<br><span>Mean It.</span></h1>
+  <p class="sub">Hypertrophy · APT correction · Real aerobic conditioning</p>
+</div>
+
+<div class="principles">
+  <div class="p-card">
+    <div class="p-icon">⏱</div>
+    <div class="p-title">90 Min Hard Cap</div>
+    <div class="p-body">Primer + cardio + lifting. All in. No exceptions.</div>
+  </div>
+  <div class="p-card">
+    <div class="p-icon">🫀</div>
+    <div class="p-title">Real Cardio</div>
+    <div class="p-body">Rowing, bike & battle ropes — not just walking</div>
+  </div>
+  <div class="p-card">
+    <div class="p-icon">🦴</div>
+    <div class="p-title">Spine Safe</div>
+    <div class="p-body">Trap bar, leg press & RDL. No barbell squats.</div>
+  </div>
+</div>
+
+<div class="week-label">Weekly layout</div>
+<div class="week">
+  <div class="dc pull"><div class="dn">D1</div><div class="dd"></div><div class="dl">Pull</div></div>
+  <div class="dc legs"><div class="dn">D2</div><div class="dd"></div><div class="dl">Legs</div></div>
+  <div class="dc rest"><div class="dn">D3</div><div class="dd"></div><div class="dl">Rest</div></div>
+  <div class="dc push"><div class="dn">D4</div><div class="dd"></div><div class="dl">Push</div></div>
+  <div class="dc power"><div class="dn">D5</div><div class="dd"></div><div class="dl">Power</div></div>
+  <div class="dc cardio"><div class="dn">D6</div><div class="dd"></div><div class="dl">Cardio</div></div>
+  <div class="dc rest"><div class="dn">D7</div><div class="dd"></div><div class="dl">Rest</div></div>
+</div>
+
+<div class="sessions">
+
+  <!-- Primer -->
+  <div class="session" id="s0">
+    <div class="sh" onclick="toggle('s0')">
+      <div class="dbadge">ALL</div>
+      <div class="sbar" style="background:#b07a00"></div>
+      <div class="sd"><strong>Daily Primer</strong><span>Before every session — 10 min</span></div>
+      <div class="time-badge time-ok">10 min</div>
+      <div class="chev">▼</div>
+    </div>
+    <div class="sb">
+      <div class="warmup-grid">
+        <div class="wu-item"><span class="wu-sets">5 reps/side</span>World's Greatest Stretch</div>
+        <div class="wu-item"><span class="wu-sets">10 reps</span>90/90 Hip Switches</div>
+        <div class="wu-item"><span class="wu-sets">12 reps</span>Wall Slides</div>
+        <div class="wu-item"><span class="wu-sets">15 reps</span>Chin Tucks</div>
+        <div class="wu-item"><span class="wu-sets">3×15 R · 1×15 L</span>Serratus Punch</div>
+        <div class="wu-item"><span class="wu-sets">1×15 light</span>Face Pulls</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Day 1: Pull -->
+  <div class="session" id="s1">
+    <div class="sh" onclick="toggle('s1')">
+      <div class="dbadge">Day 1</div>
+      <div class="sbar" style="background:var(--pull)"></div>
+      <div class="sd"><strong>Pull + Upper Core</strong><span>Back · Lower trap · Biceps</span></div>
+      <div class="time-badge time-ok">~75 min</div>
+      <div class="chev">▼</div>
+    </div>
+    <div class="sb">
+      <div class="time-breakdown">
+        <div class="tb-seg" style="background:#f0f0f0">🧘 Primer 10m</div>
+        <div class="tb-arrow">→</div>
+        <div class="tb-seg" style="background:#deeeff">🚣 Row 8m</div>
+        <div class="tb-arrow">→</div>
+        <div class="tb-seg" style="background:#f0f0f0">💪 Lift ~55m</div>
+        <div class="tb-total">~73 min</div>
+      </div>
+      <div class="cardio-block">
+        <div class="cb-title">🚣 Warmup · Rowing Machine — 8 min</div>
+        <div class="cb-row"><span>Intensity</span><span>Zone 2 — conversational pace</span></div>
+        <div class="cb-note">Primes lats and rhomboids before pulling. Drag factor ~110–120.</div>
+      </div>
+      <div class="section-divider">Strength — 6 exercises · rest 90s between sets</div>
+      <ul class="exlist">
+        <li><span class="sets c-pull">2 × 30s</span><div class="exinfo"><span class="exname">Dead Hang</span><span class="exnote">Decompress spine before loading</span></div></li>
+        <li><span class="sets c-pull">4 × 10</span><div class="exinfo"><span class="exname">Chest-Supported DB Row</span><span class="exnote">1-second blade squeeze at top</span></div></li>
+        <li><span class="sets c-pull">4 × 8–10</span><div class="exinfo"><span class="exname">Pull-Ups (Assisted or BW)</span><span class="exnote">Full dead hang at bottom, chin clears bar</span></div></li>
+        <li><span class="sets c-pull">3 × 15</span><div class="exinfo"><span class="exname">Incline DB Y-Raise</span><span class="exnote">Lower trap fix — slow and controlled</span></div></li>
+        <li><span class="sets c-pull">3 × 15</span><div class="exinfo"><span class="exname">Face Pulls (Cable)</span><span class="exnote">External rotation — non-negotiable</span></div></li>
+        <li><span class="sets c-pull">3 × 15</span><div class="exinfo"><span class="exname">Abdominal Machine</span><span class="exnote">Posterior tilt FIRST. Felt in hips? Stop and reset.</span></div></li>
+      </ul>
+      <div class="primer-note" style="margin-top:0.9rem">✂️ Incline DB Curls dropped from this day — add to Day 3 or skip. Keeps you under 75 min.</div>
+    </div>
+  </div>
+
+  <!-- Day 2: Push -->
+  <div class="session" id="s2">
+    <div class="sh" onclick="toggle('s2')">
+      <div class="dbadge">Day 2</div>
+      <div class="sbar" style="background:var(--push)"></div>
+      <div class="sd"><strong>Push + Aesthetic</strong><span>Upper chest · Shoulder caps · Serratus</span></div>
+      <div class="time-badge time-ok">~70 min</div>
+      <div class="chev">▼</div>
+    </div>
+    <div class="sb">
+      <div class="time-breakdown">
+        <div class="tb-seg" style="background:#f0f0f0">🧘 Primer 10m</div>
+        <div class="tb-arrow">→</div>
+        <div class="tb-seg" style="background:#deeeff">🚲 Bike 8m</div>
+        <div class="tb-arrow">→</div>
+        <div class="tb-seg" style="background:#f0f0f0">💪 Lift ~50m</div>
+        <div class="tb-total">~68 min</div>
+      </div>
+      <div class="cardio-block">
+        <div class="cb-title">🚲 Warmup · Stationary Bike — 8 min</div>
+        <div class="cb-row"><span>Intensity</span><span>Zone 2 — light resistance, smooth cadence</span></div>
+        <div class="cb-note">Warms legs without fatiguing the upper body you're about to press. RPE 4.</div>
+      </div>
+      <div class="section-divider">Strength — 6 exercises · rest 90s between sets</div>
+      <ul class="exlist">
+        <li><span class="sets c-push">4 × 8–10</span><div class="exinfo"><span class="exname">Incline DB Press</span><span class="exnote">Upper chest — corrects sunken posture</span></div></li>
+        <li><span class="sets c-push">3 × 10</span><div class="exinfo"><span class="exname">Landmine Press</span><span class="exnote">Shoulder-safe. No joint pinching.</span></div></li>
+        <li><span class="sets c-push">3 × 12</span><div class="exinfo"><span class="exname">Push-Up Plus</span><span class="exnote">At top: push floor away, spread shoulder blades. Serratus fix.</span></div></li>
+        <li><span class="sets c-push">3 × 15–20</span><div class="exinfo"><span class="exname">Cable Lateral Raises</span><span class="exnote">Shoulder width — slow eccentrics</span></div></li>
+        <li><span class="sets c-push">3 × 15</span><div class="exinfo"><span class="exname">Rear Delt Flyes</span><span class="exnote">Counterbalances pressing volume</span></div></li>
+        <li><span class="sets c-push">3 × 12</span><div class="exinfo"><span class="exname">Overhead Tricep Extension</span><span class="exnote">Long head mass</span></div></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Day 3: Cardio + Core -->
+  <div class="session" id="s3">
+    <div class="sh" onclick="toggle('s3')">
+      <div class="dbadge">Day 3</div>
+      <div class="sbar" style="background:var(--cardio)"></div>
+      <div class="sd"><strong>Dedicated Cardio + Core</strong><span>Aerobic capacity · Cholesterol · APT</span></div>
+      <div class="time-badge time-ok">~75 min</div>
+      <div class="chev">▼</div>
+    </div>
+    <div class="sb">
+      <div class="time-breakdown">
+        <div class="tb-seg" style="background:#f0f0f0">🧘 Primer 10m</div>
+        <div class="tb-arrow">→</div>
+        <div class="tb-seg" style="background:#deeeff">🫀 Circuit 40m</div>
+        <div class="tb-arrow">→</div>
+        <div class="tb-seg" style="background:#f0f0f0">🧠 Core 20m</div>
+        <div class="tb-total">~70 min</div>
+      </div>
+      <div class="primer-note">⚡ No heavy lifting today — full aerobic focus. Energy should feel high throughout.</div>
+      <div class="section-divider">Aerobic Circuit — 40 min total</div>
+      <ul class="exlist">
+        <li><span class="sets c-cardio">12 min</span><div class="exinfo"><span class="exname">Rowing Machine</span><span class="exnote">Zone 2–3. Steady first 10 min, push last 2 min. Drag ~120.</span></div></li>
+        <li><span class="sets c-cardio">12 min</span><div class="exinfo"><span class="exname">Stationary Bike</span><span class="exnote">Zone 2. Moderate resistance. 80–90 RPM cadence.</span></div></li>
+        <li><span class="sets c-cardio">4×30s on/30s off</span><div class="exinfo"><span class="exname">Battle Ropes — Alternating Waves</span><span class="exnote">Max effort on, full rest off. Hips low, core braced.</span></div></li>
+        <li><span class="sets c-cardio">4×20s on/40s off</span><div class="exinfo"><span class="exname">Battle Ropes — Double Slams</span><span class="exnote">Explosive. Great for LDL and shoulder conditioning.</span></div></li>
+        <li><span class="sets c-cardio">6–8 min</span><div class="exinfo"><span class="exname">Treadmill Easy Jog / Walk</span><span class="exnote">Cool-down. Let HR drop to Zone 1 before core work.</span></div></li>
+      </ul>
+      <div class="section-divider">Core — APT Correction · 20 min</div>
+      <ul class="exlist">
+        <li><span class="sets c-accent">4 × 15</span><div class="exinfo"><span class="exname">Dead-Bugs</span><span class="exnote">Lower back flat on floor. Hand fits under? Set doesn't count.</span></div></li>
+        <li><span class="sets c-accent">3 × 10/side</span><div class="exinfo"><span class="exname">Bird-Dog</span><span class="exnote">Hold 2s at extension. Spinal stability.</span></div></li>
+        <li><span class="sets c-accent">3 × 10/side</span><div class="exinfo"><span class="exname">Pallof Press (Cable)</span><span class="exnote">Anti-rotation. Flattens stomach over time.</span></div></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Day 4: Legs -->
+  <div class="session" id="s4">
+    <div class="sh" onclick="toggle('s4')">
+      <div class="dbadge">Day 4</div>
+      <div class="sbar" style="background:var(--legs)"></div>
+      <div class="sd"><strong>Lower Body — Quad Focus</strong><span>Spine-safe leg mass · Pelvic stability</span></div>
+      <div class="time-badge time-ok">~75 min</div>
+      <div class="chev">▼</div>
+    </div>
+    <div class="sb">
+      <div class="time-breakdown">
+        <div class="tb-seg" style="background:#f0f0f0">🧘 Primer 10m</div>
+        <div class="tb-arrow">→</div>
+        <div class="tb-seg" style="background:#deeeff">🚲 Bike 10m</div>
+        <div class="tb-arrow">→</div>
+        <div class="tb-seg" style="background:#f0f0f0">💪 Lift ~50m</div>
+        <div class="tb-total">~70 min</div>
+      </div>
+      <div class="cardio-block">
+        <div class="cb-title">🚲 Warmup · Stationary Bike — 10 min</div>
+        <div class="cb-row"><span>Intensity</span><span>Zone 2 — higher resistance than Day 2</span></div>
+        <div class="cb-note">Acts as quad activation, not just warmup. RPE 5–6. Legs should feel warm and ready.</div>
+      </div>
+      <div class="section-divider">Strength — 5 exercises · rest 90s between sets</div>
+      <ul class="exlist">
+        <li><span class="sets c-legs">3 × 15</span><div class="exinfo"><span class="exname">Leg Extension</span><span class="exnote">Pre-fatigue quads with zero spinal load</span></div></li>
+        <li><span class="sets c-legs">4 × 10–12</span><div class="exinfo"><span class="exname">Leg Press (Feet Mid-Low)</span><span class="exnote">Lower back glued to pad. No butt wink at bottom.</span></div></li>
+        <li><span class="sets c-legs">3 × 8/side</span><div class="exinfo"><span class="exname">Bulgarian Split Squat</span><span class="exnote">Light DBs. Corrects hip imbalances.</span></div></li>
+        <li><span class="sets c-legs">3 × 15–20</span><div class="exinfo"><span class="exname">Hip Abductor Machine</span><span class="exnote">Glute medius — stabilizes pelvis horizontally</span></div></li>
+        <li><span class="sets c-legs">4 × 12–15</span><div class="exinfo"><span class="exname">Calf Raises</span><span class="exnote">Full stretch at bottom, pause at top</span></div></li>
+      </ul>
+      <div class="primer-note" style="margin-top:0.9rem">🧘 Post-session: Couch Stretch 2×60s/side + Deep Squat Hold 60s</div>
+    </div>
+  </div>
+
+  <!-- Day 5: Power / Posterior -->
+  <div class="session" id="s5">
+    <div class="sh" onclick="toggle('s5')">
+      <div class="dbadge">Day 5</div>
+      <div class="sbar" style="background:var(--power)"></div>
+      <div class="sd"><strong>Athletic Power — Posterior Chain</strong><span>Hinge · APT killer · Strength</span></div>
+      <div class="time-badge time-ok">~85 min</div>
+      <div class="chev">▼</div>
+    </div>
+    <div class="sb">
+      <div class="time-breakdown">
+        <div class="tb-seg" style="background:#f0f0f0">🧘 Primer 10m</div>
+        <div class="tb-arrow">→</div>
+        <div class="tb-seg" style="background:#f0f0f0">💪 Lift ~55m</div>
+        <div class="tb-arrow">→</div>
+        <div class="tb-seg" style="background:#f4eeff">⚡ Cardio 15m</div>
+        <div class="tb-total">~80 min</div>
+      </div>
+      <div class="primer-note">⚡ Cardio is at the END today — after lifting, so your legs are fresh for heavy work. Keep it short and hard.</div>
+      <div class="section-divider">Strength — 5 exercises · rest 90s between sets</div>
+      <ul class="exlist">
+        <li><span class="sets c-power">4 × 15</span><div class="exinfo"><span class="exname">Kettlebell Swings</span><span class="exnote">Hip hinge primer — wakes glutes before heavy lifts</span></div></li>
+        <li><span class="sets c-power">3 × 6–8</span><div class="exinfo"><span class="exname">Trap Bar Deadlift</span><span class="exnote">Spine-neutral. Heavier than RDL. This is your power movement.</span></div></li>
+        <li><span class="sets c-power">4 × 10</span><div class="exinfo"><span class="exname">Barbell Hip Thrust</span><span class="exnote">Posterior tilt first, then drive up. 2s squeeze. The APT killer.</span></div></li>
+        <li><span class="sets c-power">3 × 12</span><div class="exinfo"><span class="exname">Lying Leg Curl</span><span class="exnote">Isolates hamstrings</span></div></li>
+        <li><span class="sets c-power">3 × 40m</span><div class="exinfo"><span class="exname">Farmer's Carries</span><span class="exnote">Shoulders packed down, neck long. Postural endurance.</span></div></li>
+      </ul>
+      <div class="section-divider">Cardio Finisher — 15 min (you're tired, keep it short)</div>
+      <ul class="exlist">
+        <li><span class="sets c-cardio">4×20s on/40s off</span><div class="exinfo"><span class="exname">Battle Ropes — Double Slams</span><span class="exnote">~5 min total. Explosive. Max effort each interval.</span></div></li>
+        <li><span class="sets c-cardio">8–10 min</span><div class="exinfo"><span class="exname">Treadmill — Moderate Jog</span><span class="exnote">5.0–6.0 mph. Zone 3. This is your cooldown that still counts as cardio.</span></div></li>
+      </ul>
+      <div class="primer-note" style="margin-top:0.9rem">🧘 Post-session: Couch Stretch 2×60s/side + Doorway Pec Stretch 60s</div>
+    </div>
+  </div>
+
+  <!-- Rest -->
+  <div class="session" id="s6">
+    <div class="sh" onclick="toggle('s6')">
+      <div class="dbadge">D6–D7</div>
+      <div class="sbar" style="background:var(--border)"></div>
+      <div class="sd"><strong>Full Rest</strong><span>CNS recovery · Hormonal reset</span></div>
+      <div class="time-badge time-ok">0 min 😴</div>
+      <div class="chev">▼</div>
+    </div>
+    <div class="sb">
+      <p style="font-family:'Inconsolata',monospace;font-size:0.82rem;color:var(--muted);line-height:1.6;">
+        Keep daily correctives: chin tucks ×10 + wall slides ×15, five times throughout the day.<br><br>
+        <strong style="color:var(--text)">The software engineer rule:</strong> Every 60 min of coding = 10 chin tucks + stand for 2 minutes.
+      </p>
+    </div>
+  </div>
+
+</div>
+
+<!-- Rules -->
+<div class="rules">
+  <h3>The Rules</h3>
+  <div class="rule">
+    <span class="rule-icon">⏱</span>
+    <p><strong>90-min hard cap.</strong> If you're going over, cut a set — not a cooldown. Cortisol past 90 min fights your goals.</p>
+  </div>
+  <div class="rule">
+    <span class="rule-icon">🔋</span>
+    <p><strong>Energy management.</strong> Heavy compound lifts always come before cardio (except Day 3). Never burn your CNS on cardio then try to lift heavy.</p>
+  </div>
+  <div class="rule">
+    <span class="rule-icon">📈</span>
+    <p><strong>Progressive overload.</strong> Hit 10 reps clean this week → go for 11 or add 1kg next week. Track it.</p>
+  </div>
+  <div class="rule">
+    <span class="rule-icon">⚖️</span>
+    <p><strong>Form over weight.</strong> Shoulders rolling on a press? Back arching on a deadlift? Drop the weight.</p>
+  </div>
+  <div class="rule">
+    <span class="rule-icon">➕</span>
+    <p><strong>The Plus rule.</strong> On every press, lock out fully and reach shoulders forward at the top. Every rep.</p>
+  </div>
+</div>
+
+<script>
+function toggle(id) {
+  document.getElementById(id).classList.toggle('open');
+}
+document.getElementById('s1').classList.add('open');
+</script>
+</body>
+</html>
