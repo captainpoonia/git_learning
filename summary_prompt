@@ -1,0 +1,48 @@
+I'm doing a deep-dive review of my own company's codebase before I leave the
+job, so I actually understand what was built — not just the parts I wrote,
+but how the pieces around them work. Explain everything like you're teaching
+a smart beginner (think: teaching my kid the fundamentals, not code review
+jargon). Assume I know general programming but NOT this specific library or
+pattern.
+
+TOPIC: [TOPIC — e.g. "Hazelcast", "Solace", "encryption/secrets handling",
+"overall application architecture"]
+
+Please investigate the actual code (grep/search across the repo, don't guess
+from memory of what a typical implementation looks like) and answer:
+
+1. WHERE is it used?
+   - List every file/module that touches this. Group by purpose (e.g. "cache
+     config", "actual read/write calls", "event listeners").
+
+2. HOW is it wired in?
+   - What dependency/library version is pulled in (show me the exact entry
+     in pom.xml / build.gradle / package.json / requirements.txt)?
+   - What annotations or config (Spring beans, @Configuration classes, XML
+     config, YAML/properties) set it up? Show me the actual code, then
+     explain what each annotation/setting does in plain English.
+   - How does dependency injection happen here — constructor injection,
+     field injection, a factory, a bean defined somewhere else? Trace it.
+
+3. WHAT is it actually doing for us?
+   - What problem is this solving in our specific app (not the generic
+     textbook use case — OUR use case)?
+   - What data flows through it? Walk me through one real request/message
+     end-to-end: where it enters, what touches [TOPIC], what comes out.
+
+4. COULD it be decoupled / replaced?
+   - Is this tightly coupled to business logic, or is it cleanly abstracted
+     behind an interface?
+   - If we swapped it for an alternative (e.g. a different cache, a different
+     message broker), what would need to change? Is there already an
+     abstraction layer, or would this be a big rewrite?
+
+5. GOTCHAS / non-obvious behavior
+   - Any custom serializers, custom exception handling, retry logic, or
+     workarounds specific to how our team uses this? Explain why they exist,
+     if you can tell from comments/commit history/context.
+
+Format the answer as a simple walkthrough with headers per file, small code
+snippets (only the relevant lines, not whole files), and a plain-English
+explanation after each snippet — like you're narrating "here's what this
+does and why" to someone seeing it for the first time.
